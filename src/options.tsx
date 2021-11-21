@@ -62,7 +62,7 @@ const Option = () => {
             <TextField onChange={(e) => {setIid(e.target.value);}} value={iid} fullWidth/>
         </Grid>
         <Grid item xs={1}>
-            <Fab color="secondary" aria-label="Check" 
+            <Fab color="primary" aria-label="Check" 
                 onClick={() => { 
                     saveIntegrationId(iid);
                 }}>

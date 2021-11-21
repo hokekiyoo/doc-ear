@@ -58,7 +58,7 @@ export default class Notion {
         Status: {
           id: "status",
           type: "select",
-          select: { name: "NOT YET" },
+          select: { name: "UNREAD" },
         },
         URL: {
           id: "url",

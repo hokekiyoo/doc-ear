@@ -13,6 +13,8 @@ import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 import NotionClient from "./notion";
 type AlertType = 'error' | 'info' | 'success' | 'warning'
 const App = () => {
@@ -70,8 +72,7 @@ const App = () => {
         </Snackbar>
     }
     
-    return <Grid container justifyContent = "center">
-        <Box sx={{width: 300}}>
+    return <Box sx={{width: 300}}>
         <h2>Doc Ear</h2>
         <TextField
             label="Title" value={title}
@@ -96,8 +97,28 @@ const App = () => {
             value={abstract}
             onChange={e => {setAbstract(e.target.value);}} 
             />
-        <p>DB</p>
-        <Select fullWidth
+        <div style={{textAlign:'center'}}>
+        <Fab color="primary" aria-label="Refresh" style={{margin:"0.25em"}}
+            onClick={()=>{
+                chrome.tabs.executeScript(
+                    {
+                    code: "window.getSelection().toString();",
+                    },
+                    function (selection) {
+                        setAbstract(selection[0]);
+                    }
+                );
+            }
+        }>
+        <RefreshIcon/>
+        </Fab>
+        </div>
+        {/* <p>DB</p> */}
+        <FormControl fullWidth>
+        <InputLabel id="demo-simple-select-label">Database</InputLabel>
+        <Select 
+            fullWidth
+            label="database"
             onChange={(e: any) => {
                 setDBid(e.target.value);
                 console.log(e.target.value);
@@ -109,52 +130,39 @@ const App = () => {
             </MenuItem>
             ))}
         </Select>
+        </FormControl>
         <p></p>
+        
         <div style={{textAlign:'center'}}>
-            <Fab color="primary" aria-label="Refresh" style={{margin:"0.25em"}}
-                onClick={()=>{
-                    chrome.tabs.executeScript(
-                        {
-                        code: "window.getSelection().toString();",
-                        },
-                        function (selection) {
-                            setAbstract(selection[0]);
-                        }
-                    );
-                }
-            }>
-            <RefreshIcon/>
-            </Fab>
-            <Fab color="primary" aria-label="Bookmark" style={{margin:"0.25em"}}
-                onClick={async()=>{
-                    const _data = {
-                        title: title,
-                        abst: abstract,
-                        url: URL,
-                    };
-                    const data = await client.createPage(_data, dbid).then((res)=>{
-                        if (res.object==="error"){
-                            setIsOpen(true);
-                            setMessage("Something wrong.")
-                            setType("error")
-                        }else{
-                            setIsOpen(true);
-                            setMessage("notion page is successfully created!")
-                            setType("success")
-                        }
-                    } 
-                    );
-                    console.log(data)
-                }}
-            >
-            <BookmarkBorderIcon/>
-            </Fab>  
-            </div>
+        <Fab color="primary" aria-label="Bookmark" style={{margin:"0.25em"}}
+            onClick={async()=>{
+                const _data = {
+                    title: title,
+                    abst: abstract,
+                    url: URL,
+                };
+                const data = await client.createPage(_data, dbid).then((res)=>{
+                    if (res.object==="error"){
+                        setIsOpen(true);
+                        setMessage("Something wrong.")
+                        setType("error")
+                    }else{
+                        setIsOpen(true);
+                        setMessage("notion page is successfully created!")
+                        setType("success")
+                    }
+                } 
+                );
+                console.log(data)
+            }}
+        >
+        <BookmarkBorderIcon/>
+        </Fab>  
+        </div>
         <p>
         {dispSnackbar(message, type)}
         </p>
-    </Box>
-    </Grid>;
+    </Box>;
 }  
 
 
