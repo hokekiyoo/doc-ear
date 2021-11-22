@@ -41,7 +41,7 @@ export default class Notion {
     const databaseId = this.botId2iid(dbid);
     const data = await _data;
     const title = data.title;
-    const abst = data.highlight;
+    const highlight = data.highlight;
     const paperUrl = data.url;
     try {
       const url = this.apiBase + "pages";
@@ -65,13 +65,13 @@ export default class Notion {
           type: "url",
           url: paperUrl,
         },
-        Abstract: {
-          id: "abstract",
+        Highlight: {
+          id: "highlight",
           type: "rich_text",
           rich_text: [
             {
               type: "text",
-              text: { content: abst},
+              text: { content: highlight},
               annotations: {
                 bold: false,
                 italic: true,
@@ -80,7 +80,7 @@ export default class Notion {
                 code: false,
                 color: "default",
               },
-              plain_text: abst,
+              plain_text: highlight,
             },
           ],
         },

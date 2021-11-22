@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import NotionClient from "./notion";
+import Typography from '@mui/material/Typography';
 
 type AlertType = 'error' | 'info' | 'success' | 'warning'
 const App = () => {
@@ -79,7 +80,9 @@ const App = () => {
     }
     
     return <Box sx={{width: 300}}>
-        <h2>doc-ear</h2>
+        <Typography variant="h6">
+            doc-ear
+        </Typography>
         <TextField
             label="Title" value={title}
             contentEditable="true" 
