@@ -1,5 +1,7 @@
 node_modules/
 dist/
+packages/
 *.pem
+*.zip
 .DS_Store
 yarn.lock

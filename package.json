@@ -28,6 +28,7 @@
     "@types/chrome": "^0.0.164",
     "@types/styled-components": "^5.1.15",
     "add": "^2.0.6",
+    "crx": "^5.0.1",
     "npm": "^8.1.4",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
@@ -36,6 +37,9 @@
     "yarn": "^1.22.17"
   },
   "scripts": {
-    "build": "webpack --mode production --config webpack.config.js"
+    "build": "webpack --mode production --config webpack.config.js",
+    "pack": "npm run pack:keygen && npm run pack:zip",
+    "pack:zip": "crx pack -p key.pem -o doc-ear.crx --zip-output doc-ear.chrome.zip dist",
+    "pack:keygen": "if [ ! -f key.pem ] ; then crx keygen ./ ; fi"
   }
 }
