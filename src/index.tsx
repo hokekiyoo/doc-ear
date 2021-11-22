@@ -1,13 +1,9 @@
 /// <reference types="chrome"/>
 import React, {useState, useEffect, useCallback} from 'react';
 import ReactDOM from 'react-dom';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import BookmarkBorderIcon from '@mui/icons-material/BookmarkBorder';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import Fab from '@mui/material/Fab';
-import styled from "styled-components"
-import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
 import Select from '@mui/material/Select';
 import Snackbar from '@mui/material/Snackbar';
@@ -16,9 +12,11 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import NotionClient from "./notion";
+
 type AlertType = 'error' | 'info' | 'success' | 'warning'
 const App = () => {
-    const [abstract, setAbstract] = useState("");
+
+    const [highlight, setHighlight] = useState("");
     const [title, setTitle] = useState("");
     const [URL, setURL] = useState("");
     const [databases, setDatabases] = useState([])
@@ -28,7 +26,6 @@ const App = () => {
     const [isOpen, setIsOpen] = useState(false)
     const [type, setType] = useState<AlertType>("success")
     const [message, setMessage] = useState("Default Message")
-    
 
     useEffect(() => {
         // Runs after the first render() lifecycle
@@ -53,8 +50,17 @@ const App = () => {
             client.retrieveDatabase().then(res =>{
                 res.forEach((e:any) => console.log("DB",e.title[0].text.content))
                 setDatabases(res)
+                setDBid(res[0].id)
             })
         });
+        chrome.tabs.executeScript(
+            {
+            code: "window.getSelection().toString();",
+            },
+            function (selection) {
+                setHighlight(selection[0]);
+            }
+        );
     }, []);
     
     const dispSnackbar = (mes:string, type:'error' | 'info' | 'success' | 'warning') =>{
@@ -73,7 +79,7 @@ const App = () => {
     }
     
     return <Box sx={{width: 300}}>
-        <h2>Doc Ear</h2>
+        <h2>doc-ear</h2>
         <TextField
             label="Title" value={title}
             contentEditable="true" 
@@ -82,42 +88,21 @@ const App = () => {
             onChange={e => {setTitle(e.target.value);}} 
             />            
         <TextField 
-            label="URL" 
-            fullWidth 
-            margin="normal"
-            value={URL} 
-            onChange={e => {setURL(e.target.value);}} 
-            />
-        <TextField 
             id="outlined-multiline-flexible" 
-            label="Abstract" 
+            label="Highlight" 
             fullWidth
             margin="normal"
             multiline maxRows={30} 
-            value={abstract}
-            onChange={e => {setAbstract(e.target.value);}} 
+            value={highlight}
+            onChange={e => {setHighlight(e.target.value);}} 
             />
-        <div style={{textAlign:'center'}}>
-        <Fab color="primary" aria-label="Refresh" style={{margin:"0.25em"}}
-            onClick={()=>{
-                chrome.tabs.executeScript(
-                    {
-                    code: "window.getSelection().toString();",
-                    },
-                    function (selection) {
-                        setAbstract(selection[0]);
-                    }
-                );
-            }
-        }>
-        <RefreshIcon/>
-        </Fab>
-        </div>
-        {/* <p>DB</p> */}
+        <p></p>
         <FormControl fullWidth>
         <InputLabel id="demo-simple-select-label">Database</InputLabel>
         <Select 
             fullWidth
+            displayEmpty
+            value={dbid}
             label="database"
             onChange={(e: any) => {
                 setDBid(e.target.value);
@@ -134,30 +119,30 @@ const App = () => {
         <p></p>
         
         <div style={{textAlign:'center'}}>
-        <Fab color="primary" aria-label="Bookmark" style={{margin:"0.25em"}}
-            onClick={async()=>{
-                const _data = {
-                    title: title,
-                    abst: abstract,
-                    url: URL,
-                };
-                const data = await client.createPage(_data, dbid).then((res)=>{
-                    if (res.object==="error"){
-                        setIsOpen(true);
-                        setMessage("Something wrong.")
-                        setType("error")
-                    }else{
-                        setIsOpen(true);
-                        setMessage("notion page is successfully created!")
-                        setType("success")
-                    }
-                } 
-                );
-                console.log(data)
-            }}
+        <Button variant="contained" color="primary"
+                fullWidth
+                onClick={async()=>{
+                    const _data = {
+                        title: title,
+                        highlight: highlight,
+                        url: URL,
+                    };
+                    const data = await client.createPage(_data, dbid).then((res)=>{
+                        if (res.object==="error"){
+                            setIsOpen(true);
+                            setMessage("Something wrong.")
+                            setType("error")
+                        }else{
+                            setIsOpen(true);
+                            setMessage("notion page is successfully created!")
+                            setType("success")
+                        }
+                    } 
+                    );
+                    console.log(data);}}
         >
-        <BookmarkBorderIcon/>
-        </Fab>  
+            <BookmarkBorderIcon/>Bookmark
+        </Button>
         </div>
         <p>
         {dispSnackbar(message, type)}

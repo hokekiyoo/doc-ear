@@ -41,7 +41,7 @@ export default class Notion {
     const databaseId = this.botId2iid(dbid);
     const data = await _data;
     const title = data.title;
-    const abst = data.abst;
+    const abst = data.highlight;
     const paperUrl = data.url;
     try {
       const url = this.apiBase + "pages";

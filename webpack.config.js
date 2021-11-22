@@ -8,7 +8,7 @@ module.exports = {
     app: "./src/index.tsx",
     options: "./src/options.tsx",
     background: "./src/background.ts",
-    notion: "./src/notion.ts",
+    // notion: "./src/notion.ts",
   },
   output: {
     path: __dirname + "/dist",
@@ -31,6 +31,17 @@ module.exports = {
       {
         test: /\.css$/,
         use: [MiniCssExtractPlugin.loader, "css-loader"],
+      },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        use: [
+          {
+            loader: "file-loader",
+            options: {
+              name: "[path][name].[ext]", //
+            },
+          },
+        ],
       },
     ],
   },
