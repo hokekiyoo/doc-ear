@@ -7,8 +7,6 @@ module.exports = {
   entry: {
     app: "./src/index.tsx",
     options: "./src/options.tsx",
-    background: "./src/background.ts",
-    // notion: "./src/notion.ts",
   },
   output: {
     path: __dirname + "/dist",

@@ -64,7 +64,7 @@ const App = () => {
         );
     }, []);
     
-    const dispSnackbar = (mes:string, type:'error' | 'info' | 'success' | 'warning') =>{
+    const dispSnackbar = (mes:string, type:AlertType) =>{
         return <Snackbar 
         open={isOpen} 
         autoHideDuration={5000} 
